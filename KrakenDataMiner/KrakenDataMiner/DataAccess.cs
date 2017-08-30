@@ -25,7 +25,7 @@ namespace KrakenDataMiner
 
         public void WriteTrades(object obj, string path)
         {
-            File.AppendAllText(BuildTradesPath(path), JsonConvert.SerializeObject(obj));
+            File.AppendAllText(path, JsonConvert.SerializeObject(obj));
         }
 
         private static string BuildTradesPath(string path)
