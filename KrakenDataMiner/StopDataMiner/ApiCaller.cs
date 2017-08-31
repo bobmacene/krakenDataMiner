@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net.Http;
 
-namespace KrakenDataMiner
+namespace Shared
 {
     public interface IApiCall
     {

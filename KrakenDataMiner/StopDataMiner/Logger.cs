@@ -2,9 +2,9 @@
 using System.Configuration;
 using System.IO;
 
-namespace KrakenDataMiner
+namespace Shared
 {
-    class Logger
+    public class Logger
     {
         public string Log;
         public string LogPath;
@@ -46,12 +46,6 @@ namespace KrakenDataMiner
             File.AppendAllText(Log, LogPath);
         }
 
-        //private static string BuildWritePath()
-        //{
-        //    return Path.Combine(
-        //        ConfigurationManager.AppSettings["LogFilePath"],
-        //        $"{DateTime.Now.ToString("yyyy.MM.dd_HHmmss")}_KrakenDataMiner.txt");
-        //}
     }
 
     public enum LogAction { Close }

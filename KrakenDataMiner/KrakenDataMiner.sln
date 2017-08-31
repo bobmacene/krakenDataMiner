@@ -5,6 +5,10 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KrakenDataMiner", "KrakenDataMiner\KrakenDataMiner.csproj", "{AF0A7672-33C6-4018-9041-A7101D2FEE00}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KrakenDataMiner.Tests", "KrakenDataMiner.Tests\KrakenDataMiner.Tests.csproj", "{ACC19E45-73B9-4526-BACB-7291040C7BA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "StopDataMiner\Shared.csproj", "{50EEDDE9-BBAC-48D4-ACDB-02F02E55B58A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{AF0A7672-33C6-4018-9041-A7101D2FEE00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF0A7672-33C6-4018-9041-A7101D2FEE00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF0A7672-33C6-4018-9041-A7101D2FEE00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACC19E45-73B9-4526-BACB-7291040C7BA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACC19E45-73B9-4526-BACB-7291040C7BA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACC19E45-73B9-4526-BACB-7291040C7BA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACC19E45-73B9-4526-BACB-7291040C7BA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50EEDDE9-BBAC-48D4-ACDB-02F02E55B58A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50EEDDE9-BBAC-48D4-ACDB-02F02E55B58A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50EEDDE9-BBAC-48D4-ACDB-02F02E55B58A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50EEDDE9-BBAC-48D4-ACDB-02F02E55B58A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
