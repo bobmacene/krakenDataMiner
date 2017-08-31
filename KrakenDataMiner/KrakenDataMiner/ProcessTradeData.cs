@@ -3,10 +3,10 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Shared;
 using System.Collections.Generic;
+using KrakenDataMiner;
 
-namespace KrakenDataMiner
+namespace Shared
 {
     class ProcessTradeData
     {
@@ -39,7 +39,7 @@ namespace KrakenDataMiner
             while (!shared.StopApp)
             {
                 timerAction.Invoke();
-                Task.Delay(30000).Wait();
+                Task.Delay(5000).Wait();
                 shared.Log.AddLogEvent($"Run {++count} Finished\n\n");
                 shared.Log.PersistLog();
                 shared.Log.Log = string.Empty;

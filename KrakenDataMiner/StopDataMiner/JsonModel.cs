@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace KrakenDataMiner
+namespace Shared
 {
     enum Pair { XETHXXBT, XETHZEUR }
 

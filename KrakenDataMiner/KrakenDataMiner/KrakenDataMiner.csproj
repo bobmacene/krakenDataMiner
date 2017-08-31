@@ -55,7 +55,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="JsonModel.cs" />
     <Compile Include="LastTradeNumber.cs" />
     <Compile Include="ProcessTradeData.cs" />
     <Compile Include="Program.cs" />

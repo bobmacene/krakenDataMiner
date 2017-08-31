@@ -30,13 +30,13 @@ namespace KrakenDataMiner
                         Environment.Exit(-1);
                     }
                 });
-                shared.Log.AddLogEvent("\nExit Task Started\n");
+                shared.Log.AddLogEvent("Exit Task Started\n\n");
 
                 var processTask = new Task(() => 
                 {
                     tradeData.RunApiCallWriteTradeData(shared);
                 });
-                shared.Log.AddLogEvent("\nProcess Task Started\n");
+                shared.Log.AddLogEvent("Process Task Started\n\n");
                 processTask.RunSynchronously();
             }
             catch (Exception ex)
