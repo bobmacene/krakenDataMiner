@@ -6,11 +6,15 @@ namespace KrakenDataMiner
 {
     class Logger
     {
-        private string Log;
+        public string Log;
+        public string LogPath;
+        public string Filename;
 
         public Logger()
         {
             Log = DateTime.Now + ":    KRAKEN.DATA.MINER STARTED.\n\n";
+            Filename = $"{DateTime.Now.ToString("yyyy.MM.dd_HHmmss")}_KrakenDataMiner.txt";    
+            LogPath = Path.Combine(ConfigurationManager.AppSettings["LogFilePath"], Filename);
         }
 
         public void AddServerTimeToLog(ApiCall api)
@@ -32,23 +36,22 @@ namespace KrakenDataMiner
         }
 
         public void PersistLog()
-        {
-            var path = BuildWritePath();   
-            File.WriteAllText(path, Log);
+        {  
+            File.AppendAllText(LogPath, Log);
         }
 
         public void PersistLog(LogAction close)
         {
             Log = $"{Log}\n{DateTime.Now}:  APP CLOSED";
-            File.AppendAllText(Log, BuildWritePath());
+            File.AppendAllText(Log, LogPath);
         }
 
-        private static string BuildWritePath()
-        {
-            return Path.Combine(
-                ConfigurationManager.AppSettings["LogFilePath"],
-                $"{DateTime.Now.ToString("yyyy.MM.dd_HHmmss")}_KrakenDataMiner.txt");
-        }
+        //private static string BuildWritePath()
+        //{
+        //    return Path.Combine(
+        //        ConfigurationManager.AppSettings["LogFilePath"],
+        //        $"{DateTime.Now.ToString("yyyy.MM.dd_HHmmss")}_KrakenDataMiner.txt");
+        //}
     }
 
     public enum LogAction { Close }
