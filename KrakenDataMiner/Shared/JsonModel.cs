@@ -9,7 +9,6 @@ namespace Shared
         public List<EthEurTrades> EthEurTradesList { get; set; }
     }
 
-
     public class EthEurTrades
     {
         public string[] Error { get; set; }
