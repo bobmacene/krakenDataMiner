@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KrakenDataMiner", "KrakenDa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KrakenDataMiner.Tests", "KrakenDataMiner.Tests\KrakenDataMiner.Tests.csproj", "{ACC19E45-73B9-4526-BACB-7291040C7BA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "StopDataMiner\Shared.csproj", "{50EEDDE9-BBAC-48D4-ACDB-02F02E55B58A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{50EEDDE9-BBAC-48D4-ACDB-02F02E55B58A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

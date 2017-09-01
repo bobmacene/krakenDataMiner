@@ -67,8 +67,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\StopDataMiner\Shared.csproj">
-      <Project>{50eedde9-bbac-48d4-acdb-02f02e55b58a}</Project>
+    <ProjectReference Include="..\Shared\Shared.csproj">
+      <Project>{50EEDDE9-BBAC-48D4-ACDB-02F02E55B58A}</Project>
       <Name>Shared</Name>
     </ProjectReference>
   </ItemGroup>
