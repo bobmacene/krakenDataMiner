@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace Shared.Models
 {
-
     public class Ohlc
     {
         public DateTime Time { get; set; }
@@ -19,17 +18,23 @@ namespace Shared.Models
 
         public Ohlc() { }
 
-        public Ohlc(OhlcString ohclString, string last)
+        public Ohlc(string[] ohclString, string last)
         {
-            Time = GetTime(Convert.ToDouble(ohclString.Time));
-            Open = Convert.ToDecimal(ohclString.Open);
-            Low = Convert.ToDecimal(ohclString.Low);
-            High = Convert.ToDecimal(ohclString.High);
-            Close = Convert.ToDecimal(ohclString.Close);
-            Vwap = Convert.ToDecimal(ohclString.Vwap);
-            Volume = Convert.ToDecimal(ohclString.Volume);
+            Time = GetTime(Convert.ToDouble(ohclString[0]));
+            Open = Convert.ToDecimal(ohclString[1]);
+            Low = Convert.ToDecimal(ohclString[2]);
+            High = Convert.ToDecimal(ohclString[3]);
+            Close = Convert.ToDecimal(ohclString[4]);
+            Vwap = Convert.ToDecimal(ohclString[5]);
+            Volume = Convert.ToDecimal(ohclString[6]);
             AveragePrice = (Close + High + Low) / 3;
             Last = Convert.ToInt64(last);
+        }
+
+        public override string ToString()
+        {
+            return $"Time:, {Time}, Open:, {Open}, High:, {High}, Low:, {Low}, Close:, {Close}," +
+                        $"Vwap:, {Vwap}, Volume:, {Volume}, AvePrice:, {AveragePrice}, Last:, {Last}";
         }
 
         private static DateTime GetTime(double msFrmUnix)
@@ -123,26 +128,5 @@ namespace Shared.Models
         }
     }
 
-    public class OhlcString
-    {
-        public string Time { get; set; }
-        public string Open { get; set; }
-        public string High { get; set; }
-        public string Low { get; set; }
-        public string Close { get; set; }
-        public string Vwap { get; set; }
-        public string Volume { get; set; }
-        public string Count { get; set; }
-        public string Last { get; set; }
-    }
 }
 
-/*
- 
-     public override string ToString()
-        {
-            return $"Time:, {Time}, Open:, {Open}, High:, {High}, Low:, {Low}," +
-                        $"Close:, {Close}, Vwap:, {Vwap}, Volume:, {Volume}, Last:, {Last}";
-        }
-
-     */

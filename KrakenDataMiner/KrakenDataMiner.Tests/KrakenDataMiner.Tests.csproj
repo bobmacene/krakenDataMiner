@@ -70,6 +70,10 @@
       <Project>{AF0A7672-33C6-4018-9041-A7101D2FEE00}</Project>
       <Name>KrakenDataMiner</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Shared\Shared.csproj">
+      <Project>{50EEDDE9-BBAC-48D4-ACDB-02F02E55B58A}</Project>
+      <Name>Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

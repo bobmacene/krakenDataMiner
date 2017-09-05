@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Configuration;
 using KrakenDataMiner;
+using Shared;
+using Shared.Models;
 
 namespace KrakenDataMiner.Tests
 {
@@ -23,6 +25,21 @@ namespace KrakenDataMiner.Tests
             Assert.AreEqual(text, writtenText);
         }
 
+        [Test]
+        public void SerialiseOhlcFromApi_Test() // not working... must serilise to string[]
+        {
+            var urls = new PathsUrls();
+            var api = new ApiCall();
+
+            var url = urls.Addresses["UrlEtcEurOhlc"];
+            var rawTrds = api.CallApi(url);
+
+            var data = new DataAccess();
+            var trds = data.Deserialise<EthEurOhlc>(rawTrds);
+
+            Assert.IsNotNull(trds);
+
+        }
         //[Test]
         //public void GetLastTradeNumber_Test()
         //{

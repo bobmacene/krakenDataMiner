@@ -19,17 +19,17 @@ namespace Shared
 
     public class ListEthEurTrades
     {
-        public List<EthEurTrades> EthEurTradesList { get; set; }
+        public List<EthEurOhlc> EthEurTradesList { get; set; }
     }
 
 
-    public class EthEurTrades
+    public class EthEurOhlc
     {
         public string[] Error { get; set; }
-        public EthEur Result { get; set; }
+        public EthEurData Result { get; set; }
     }
 
-    public class EthEur
+    public class EthEurData
     {
         public List<string[]> XETHZEUR { get; set; }
         public string Last { get; set; }

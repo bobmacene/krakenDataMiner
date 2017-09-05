@@ -48,23 +48,8 @@ namespace KarakenDataMinerOHLC
             var filename = $"{DateTime.Now.ToString("yyyy.MM.dd_HHmmss")}_KrakenOhlcData.json";
             var path = Path.Combine(pathUrl.Addresses["PathEthEurOhlc"], filename);
 
-
-
             data.Write(ohlcData, path);
             var ohlcs = data.Read<List<Ohlc>>(path);
-
-           
-            var path1 = @"C:\Users\bob\Documents\KrakenDataMiner\OHLC\EthEur\2017.09.05_132156_KrakenOhlcData.json";
-            //var ohlcs = data.Read<OhlcList>(path1);
-
-            //var strArr = new List<string>();
-
-            //foreach (var o in ohlcData)
-            //{
-            //    strArr.Add(o.ToString());
-            //}
-
-            //File.WriteAllLines(path, strArr);
         }
 
     }
