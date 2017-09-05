@@ -23,7 +23,7 @@ namespace KrakenDataMiner
 
                     if (_stop)
                     {
-                        shared.Log.AddLogEvent("\t\tAPP MANUALY EXITED\n\n");
+                        shared.Log.AddLogEvent("\t\t\tAPP MANUALLY EXITED\n\n");
                         shared.Log.AddServerTimeToLog(shared.Call);
                         shared.Log.AddLogEvent("FINISHED");
                         shared.Log.PersistLog();
