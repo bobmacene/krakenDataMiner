@@ -1,5 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Shared;
+using Shared.Models;
+using Shared.PathsUrls;
+using Shared.PathUrl;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -7,16 +11,24 @@ namespace KrakenDataMiner
 {
     public class LastTradeNumber
     {
-        public string GetLastTradeNumber(string dirPath)
+        public long GetLastTradeNumber(string dirPath)
         {
             var dir = new DirectoryInfo(dirPath);
-            var lastFile = dir.GetFiles().OrderByDescending(x => x.LastWriteTime).First();
-            var json = File.ReadAllText(lastFile.FullName);
 
-            var trades = JsonConvert.DeserializeObject<ListEthEurTrades>(json);
+            FileInfo lastFile = null;
+            List<Ohlc> trades = null;
 
-            var latestTrdNumber = trades.EthEurTradesList.Max(x=>x.Result.Last);
-            return latestTrdNumber;
+            if(dir.GetFiles().Any())
+            {
+                lastFile = dir.GetFiles()
+                .Where(x => x.Extension.EndsWith(".json"))
+                .OrderBy(x => x.LastWriteTime).Last();
+
+                trades = JsonConvert.DeserializeObject<List<Ohlc>>(
+                    File.ReadAllText(lastFile.FullName));
+            }
+
+            return trades == null || trades.Count() == 0 ? 0 : trades.Last().UnixTime;
         }
     }
 }

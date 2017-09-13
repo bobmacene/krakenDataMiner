@@ -1,11 +1,8 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System.IO;
-using System.Linq;
-using System.Configuration;
-using KrakenDataMiner;
 using Shared;
-using Shared.Models;
+using Shared.PathsUrls;
+using System.Collections.Generic;
 
 namespace KrakenDataMiner.Tests
 {
@@ -28,10 +25,10 @@ namespace KrakenDataMiner.Tests
         [Test]
         public void SerialiseOhlcFromApi_Test() // not working... must serilise to string[]
         {
-            var urls = new PathsUrls();
             var api = new ApiCall();
+            var shared = new SharedData();
 
-            var url = urls.Addresses["UrlEtcEurOhlc"];
+            var url = shared.UrlEtcEurOhlc; 
             var rawTrds = api.CallApi(url);
 
             var data = new DataAccess();
@@ -40,6 +37,24 @@ namespace KrakenDataMiner.Tests
             Assert.IsNotNull(trds);
 
         }
+
+        [Test]
+        public void StringsEqual_Test()
+        {
+            var str = "34";
+            var list = new List<string> { "12", "23", "34" };
+
+            var newList = new List<string>();
+
+            foreach(var v in list)
+            {
+                if (v == str) break;
+                newList.Add(v);
+            }
+
+            Assert.AreEqual(newList.Count, 2);
+        }
+
         //[Test]
         //public void GetLastTradeNumber_Test()
         //{

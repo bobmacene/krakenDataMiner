@@ -1,84 +1,91 @@
 ﻿using System;
-using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Collections.Generic;
-using KrakenDataMiner;
 using Shared.Models;
+using KrakenDataMiner;
+using Shared.PathUrl;
 
 namespace Shared
 {
     class ProcessTradeData
     {
-        public void RunApiCallWriteTradeData(SharedData shared)
+        public void CallApi(SharedData shared, CurrencyPair pair)
         {
-            //var lastTrd = new LastTradeNumber();
-
-            //var _since = lastTrd.GetLastTradeNumber(shared.PathUrl.Addresses["PathEthEur"])
-            //    ?? "1504169508918596501";
-
-            var _since = "1504169508918596501";
-            var path = shared.PathUrl.Addresses["PathEthEurOhlc"];
+            var lastTrd = new LastTradeNumber();
             var _newUrl = string.Empty;
 
-            var _url = _newUrl == string.Empty ?
-                Path.Combine(shared.PathUrl.Addresses["UrlEtcEurOhlc"], _since) : _newUrl;
+            var _jsonPath = pair == CurrencyPair.EthEur ? shared.JsonEthEurPath :
+                pair == CurrencyPair.BtcEur ? shared.JsonBtcEurPath :
+                shared.JsonLtcEurPath;
+            shared.Log.AddLogEvent("JsonTradeFile Path:", _jsonPath);
 
-            var fileName = $"{DateTime.Now.ToString("yyyy.MM.dd_HHmmss")}_KrakenOHLC.csv";
-            shared.Log.AddLogEvent("Trades filename: ", fileName);
+            var _csvPath = pair == CurrencyPair.EthEur ? shared.CsvEthEurPath :
+               pair == CurrencyPair.BtcEur ? shared.CsvBtcEurPath :
+               shared.CsvLtcEurPath;
+            shared.Log.AddLogEvent("CsvTradeFile Path:", _csvPath);
 
-            var savePath = Path.Combine(path, fileName);
-            shared.Log.AddLogEvent("TradeFile Path:", savePath);
+            var _dirPath = pair == CurrencyPair.EthEur ? shared.JsonEthEurDirPath :
+                pair == CurrencyPair.BtcEur ? shared.JsonBtcEurDirPath :
+                shared.JsonLtcEurDirPath;
 
-            shared.Log.AddLogEvent("Last Trade Number: ", $"{_since}\n");
+            Func<string> newUrlAction = () =>  
+            pair == CurrencyPair.EthEur ? shared.UrlEtcEurOhlc :
+            pair == CurrencyPair.BtcEur ? shared.UrlBtcEurOhlc : 
+            shared.UrlLtcEurOhlc;
+
+            var _url = _newUrl == string.Empty ? newUrlAction.Invoke() : _newUrl;
             shared.Log.AddLogEvent("Api Call Path:", _url);
 
-            Action timerAction = () => GetApiTradeWriteToFile(
-                shared, out _since, savePath, _url, out _newUrl);
+            long _since = lastTrd.GetLastTradeNumber(_dirPath);
 
-            var count = 0;
+            if (_since == 0) _since = 1502194310;                       //"1504169508918596501";
+            shared.Log.AddLogEvent("Last Trade Number: ", $"{_since}\n");
+            
+            GetTrades(shared, pair, _url, _jsonPath, _csvPath, out _since, out _newUrl);
+            
+            shared.Log.AddLogEvent($"Run {++shared.Count} Finished\n\n");
+            shared.Log.PersistLog();
+            shared.Log.Log = string.Empty;
 
-            while (!shared.StopApp)
-            {
-                timerAction.Invoke();
-                Task.Delay(60000).Wait();
-                shared.Log.AddLogEvent($"Run {++count} Finished\n\n");
-                shared.Log.PersistLog();
-                shared.Log.Log = string.Empty;
-            }
         }
 
-        public void GetApiTradeWriteToFile(
-            SharedData shared, out string since, string savePath, string url, out string newUrl)
+        public void GetTrades(SharedData shared, CurrencyPair pair, string url, 
+            string jsonPath, string csvPath, out long since, out string newUrl)
         {
-            var latestTrades = GetNewTrades(shared, url);
+            var latestTrades = GetNewTrades(shared, url, pair);
 
-            var currentTrades = GetCurrentTrades(shared, savePath);
+            var currentTrades = GetCurrentTrades(shared, jsonPath);
 
             if (currentTrades == null)
             {
-                currentTrades = new List<Ohlc>();
-                currentTrades.AddRange(latestTrades);
-
-                shared.Data.WriteTrades(currentTrades, savePath);
-                shared.Log.AddLogEvent("Trades Saved To: ", savePath);
+                File.AppendAllLines(csvPath, latestTrades.ConvertAll(x => x.ToString()));
+                shared.Data.WriteTrades(latestTrades, jsonPath);
+                shared.Log.AddLogEvent("Trades Saved To: ", jsonPath);
             }
             else
             {
-                currentTrades.AddRange(latestTrades);
+                var lastTrdTime = currentTrades.Last().UnixTime;
 
-                shared.Data.OverWriteExistingTrades(currentTrades, savePath);
-                shared.Log.AddLogEvent("Trades Saved To: ", savePath);
+                var newTrds = latestTrades
+                    .Where(x => x.UnixTime > lastTrdTime).OrderBy(x=>x.UnixTime);
+
+                if (newTrds.Any())
+                {
+                    currentTrades.AddRange(newTrds);
+                    shared.Data.OverWriteExistingTrades(currentTrades, jsonPath);
+                    File.AppendAllLines(csvPath, newTrds.ToList().ConvertAll(x => x.ToString()));
+                    shared.Log.AddLogEvent("Trades Saved To: ", jsonPath);
+                }
             }
 
-            since = latestTrades[0].Last.ToString();
-            shared.Log.AddLogEvent($"Last Trade Number: ", since);
+            since = latestTrades.Last().Last;
+            shared.Log.AddLogEvent($"Last Trade Number: ", since.ToString());
 
             shared.Log.AddLogEvent("Number of new trds added: ",
                 latestTrades.Count.ToString());
 
-            newUrl = Path.Combine(shared.PathUrl.Addresses["UrlEtcEurOhlc"], since);
+            newUrl = Path.Combine(url, since.ToString());
             shared.Log.AddLogEvent($"NewUrl: ", newUrl);
 
             shared.Log.AddLogEvent($"First/Older Trade:", latestTrades.First().ToString());
@@ -90,38 +97,55 @@ namespace Shared
             return new FileInfo(path).Exists ?
                 shared.Data.Deserialise<List<Ohlc>>(File.ReadAllText(path)) :
                 null;
-
-            #region altCode
-            //var fileInfo = new FileInfo(path);
-
-            //if (fileInfo.Exists)
-            //{
-            //    var json = File.ReadAllText(path);
-            //    return shared.Data.Deserialise<ListEthEurTrades>(json);
-            //}
-            //else
-            //{
-            //    return null;
-            //} 
-            #endregion
         }
 
-        private static List<Ohlc> GetNewTrades(SharedData shared, string url)
+        private static List<Ohlc> GetNewTrades(SharedData shared, string url, CurrencyPair pair)
         {
             var json = shared.Call.CallApi(url);
-            var newTrds = shared.Data.Deserialise<EthEurOhlc>(json);
-
-            var ohlcs = new List<Ohlc>();
-            var last = newTrds.Result.Last;
-
-            foreach (var ohlc in newTrds.Result.XETHZEUR)
-            {
-                ohlcs.Add(new Ohlc(ohlc, last));
-            }
-
-            return ohlcs;
+            return ProcessJsonModel(shared, json, pair);
         }
 
+        private static List<Ohlc> ProcessJsonModel(SharedData shared, string json, CurrencyPair pair)
+        {
+            var ohlcs = new List<Ohlc>();
+            string last;
+
+            switch(pair)
+            { 
+                case CurrencyPair.EthEur:
+                var newEthEurTrds = shared.Data.Deserialise<EthEurOhlc>(json);
+                last = newEthEurTrds.Result.Last;
+
+                foreach (var ohlc in newEthEurTrds.Result.XETHZEUR)
+                {
+                    ohlcs.Add(new Ohlc(ohlc, last));
+                }
+                    return ohlcs;
+
+                case CurrencyPair.BtcEur:
+                     var newBtcEurTrds = shared.Data.Deserialise<BtcEurOhlc>(json);
+                    last = newBtcEurTrds.Result.Last;
+
+                foreach (var ohlc in newBtcEurTrds.Result.XXBTZEUR)
+                {
+                    ohlcs.Add(new Ohlc(ohlc, last));
+                }
+                    return ohlcs;
+
+                case CurrencyPair.LtcEur:
+                var newLtcEurTrds = shared.Data.Deserialise<LtcEurOhlc>(json);
+                last = newLtcEurTrds.Result.Last;
+
+                foreach (var ohlc in newLtcEurTrds.Result.XLTCZEUR)
+                {
+                    ohlcs.Add(new Ohlc(ohlc, last));
+                }
+                    return ohlcs;
+                default:
+                    return null;
+            }
+
+        }
     }
 }
 

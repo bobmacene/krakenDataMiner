@@ -3,21 +3,7 @@ using System.Collections.Generic;
 
 namespace Shared
 {
-    enum Pair { XETHXXBT, XETHZEUR }
-
-    public class JsonModel
-    {
-        public string[] Error { get; set; }
-        public Result Result { get; set; }
-    }
-
-    public class Result
-    {
-        public dynamic Dynamic { get; set; }
-        public string Last { get; set; }
-    }
-
-    public class ListEthEurTrades
+       public class ListEthEurTrades
     {
         public List<EthEurOhlc> EthEurTradesList { get; set; }
     }
@@ -36,13 +22,25 @@ namespace Shared
     }
 
 
-    public class TradeDataBtcEur
+    public class LtcEurOhlc
     {
         public string[] Error { get; set; }
-        public BtcEur Result { get; set; }
+        public LtcEurData Result { get; set; }
     }
 
-    public class BtcEur
+    public class LtcEurData
+    {
+        public List<string[]> XLTCZEUR { get; set; }
+        public string Last { get; set; }
+    }
+
+    public class BtcEurOhlc
+    {
+        public string[] Error { get; set; }
+        public BtcEurData Result { get; set; }
+    }
+
+    public class BtcEurData
     {
         public List<string[]> XXBTZEUR { get; set; }
         public string Last { get; set; }

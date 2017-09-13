@@ -13,7 +13,7 @@ namespace Shared
         public Logger()
         {
             Log = DateTime.Now + ":    KRAKEN.DATA.MINER STARTED.\n\n";
-            Filename = $"{DateTime.Now.ToString("yyyy.MM.dd_HHmmss")}_KrakenDataMiner.txt";    
+            Filename = $"{DateTime.Now.ToString("yyyy.MM.dd_HHmmss")}_KrakenDataMiner.txt";
             LogPath = Path.Combine(ConfigurationManager.AppSettings["LogFilePath"], Filename);
         }
 
@@ -36,18 +36,10 @@ namespace Shared
         }
 
         public void PersistLog()
-        {  
+        {
             File.AppendAllText(LogPath, Log);
         }
-
-        public void PersistLog(LogAction close)
-        {
-            Log = $"{Log}\n{DateTime.Now}:  APP CLOSED";
-            File.AppendAllText(Log, LogPath);
-        }
-
     }
 
-    public enum LogAction { Close }
 }
 

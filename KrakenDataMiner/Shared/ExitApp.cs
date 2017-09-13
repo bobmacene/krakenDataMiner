@@ -23,7 +23,7 @@ namespace Shared
                         break;
                     }
                 }
-                Task.Delay(500);
+                Task.Delay(1000);
             }
         }
 

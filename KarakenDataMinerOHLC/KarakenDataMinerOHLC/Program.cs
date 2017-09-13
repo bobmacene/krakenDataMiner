@@ -16,8 +16,7 @@ namespace KarakenDataMinerOHLC
             var json = api.CallApi(url);
 
             var data = new DataAccess();
-
-            var trdData = data.Deserialise<EthEurTrades>(json);
+            var trdData = data.Deserialise<EthEurOhlc>(json);
 
             var ohlcStrings = new List<OhlcString>();
 

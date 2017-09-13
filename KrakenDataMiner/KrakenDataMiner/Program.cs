@@ -1,13 +1,14 @@
 ﻿using System;
 using Shared;
 using System.Threading.Tasks;
+using Shared.PathUrl;
 
 namespace KrakenDataMiner
 {
     public class Program
     {
         static void Main(string[] args)
-        { 
+        {
             var tradeData = new ProcessTradeData();
 
             var _stop = false;                                  //close app
@@ -17,7 +18,7 @@ namespace KrakenDataMiner
             {
                 shared.Log.AddServerTimeToLog(shared.Call);
 
-                var exitAsyncTask = Task.Run(() => 
+                var exitAsyncTask = Task.Run(() =>
                 {
                     shared.Exit.ExitAppProcess(shared, out _stop);
 
@@ -32,12 +33,21 @@ namespace KrakenDataMiner
                 });
                 shared.Log.AddLogEvent("Exit Task Started\n\n");
 
-                var processTask = new Task(() => 
+                Action EthEurCall = () => tradeData.CallApi(shared, CurrencyPair.EthEur);
+                Action BtcEurCall = () => tradeData.CallApi(shared, CurrencyPair.BtcEur);
+                Action LtcEurCall = () => tradeData.CallApi(shared, CurrencyPair.LtcEur);
+
+                var actions = new[] { EthEurCall, BtcEurCall, LtcEurCall };
+
+                while (!shared.StopApp)
                 {
-                    tradeData.RunApiCallWriteTradeData(shared);
-                });
-                shared.Log.AddLogEvent("Process Task Started\n\n");
-                processTask.RunSynchronously();
+                    foreach (var action in actions)
+                    {
+                        action.Invoke();
+                        Task.Delay(60 * 1000).Wait();
+                    }
+                    Task.Delay(60 * 1000).Wait();
+                }
             }
             catch (Exception ex)
             {
@@ -48,3 +58,48 @@ namespace KrakenDataMiner
 
     }
 }
+
+
+#region altCode
+
+//var tasks = new[]
+//{
+//    new Task(() =>
+//        {
+//            tradeData.CallApi(shared, CurrencyPair.EthEur);
+//        }),
+//    new Task(() =>
+//        {
+//            tradeData.CallApi(shared, CurrencyPair.BtcEur);
+//        }),
+//    new Task(() =>
+//        {
+//            tradeData.CallApi(shared, CurrencyPair.LtcEur);
+//        })
+// };
+
+//var _ethEurTask = new Task(() => 
+//{
+//    tradeData.RunApiCallWriteTradeData(shared, CurrencyPair.EthEur);
+//});
+//shared.Log.AddLogEvent($"{CurrencyPair.EthEur} Process Task Started\n\n");
+//_ethEurTask.RunSynchronously();
+
+//Thread.Sleep(1000 * 10);
+
+//var _btcEurTask = new Task(() =>
+//{
+//    tradeData.RunApiCallWriteTradeData(shared, CurrencyPair.BtcEur);
+//});
+//shared.Log.AddLogEvent($"{CurrencyPair.BtcEur} Process Task Started\n\n");
+//_btcEurTask.RunSynchronously();
+
+//Thread.Sleep(1000 * 10);
+
+//var _ltcEurTask = new Task(() =>
+//{
+//    tradeData.RunApiCallWriteTradeData(shared, CurrencyPair.LtcEur);
+//});
+//shared.Log.AddLogEvent($"{CurrencyPair.LtcEur} Process Task Started\n\n");
+//_ltcEurTask.RunSynchronously(); 
+#endregion

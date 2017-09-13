@@ -6,6 +6,7 @@ namespace Shared.Models
 {
     public class Ohlc
     {
+        public int UnixTime { get; set; }
         public DateTime Time { get; set; }
         public decimal Open { get; set; }
         public decimal High { get; set; }
@@ -20,6 +21,7 @@ namespace Shared.Models
 
         public Ohlc(string[] ohclString, string last)
         {
+            UnixTime = Convert.ToInt32(ohclString[0]);
             Time = GetTime(Convert.ToDouble(ohclString[0]));
             Open = Convert.ToDecimal(ohclString[1]);
             Low = Convert.ToDecimal(ohclString[2]);
@@ -33,7 +35,7 @@ namespace Shared.Models
 
         public override string ToString()
         {
-            return $"Time:, {Time}, Open:, {Open}, High:, {High}, Low:, {Low}, Close:, {Close}," +
+            return $"Unixtime:, {UnixTime}, Time:, {Time}, Open:, {Open}, High:, {High}, Low:, {Low}, Close:, {Close}," +
                         $"Vwap:, {Vwap}, Volume:, {Volume}, AvePrice:, {AveragePrice}, Last:, {Last}";
         }
 
