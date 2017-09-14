@@ -4,38 +4,37 @@ using System.Linq;
 using System.Collections.Generic;
 using Shared.Models;
 using KrakenDataMiner;
-using Shared.PathUrl;
 
 namespace Shared
 {
-    class ProcessTradeData
+    public enum CurrencyPair { EthEur, BtcEur, LtcEur }
+
+    internal class ProcessTradeData
     {
         public void CallApi(SharedData shared, CurrencyPair pair)
         {
             var lastTrd = new LastTradeNumber();
             var _newUrl = string.Empty;
 
-            var _jsonPath = pair == CurrencyPair.EthEur ? shared.JsonEthEurPath :
-                pair == CurrencyPair.BtcEur ? shared.JsonBtcEurPath :
-                shared.JsonLtcEurPath;
+            var _jsonPath = pair == CurrencyPair.EthEur ? shared.EthOhlcPathJson :
+                pair == CurrencyPair.BtcEur ? shared.BtcOhlcPathJson :
+                shared.LtcOhlcPathJson;
             shared.Log.AddLogEvent("JsonTradeFile Path:", _jsonPath);
 
-            var _csvPath = pair == CurrencyPair.EthEur ? shared.CsvEthEurPath :
-               pair == CurrencyPair.BtcEur ? shared.CsvBtcEurPath :
-               shared.CsvLtcEurPath;
+            var _csvPath = pair == CurrencyPair.EthEur ? shared.EthOhlcPathCsv:
+               pair == CurrencyPair.BtcEur ? shared.BtcOhlcPathCsv :
+               shared.LtcOhlcPathCsv;
             shared.Log.AddLogEvent("CsvTradeFile Path:", _csvPath);
 
-            var _dirPath = pair == CurrencyPair.EthEur ? shared.JsonEthEurDirPath :
-                pair == CurrencyPair.BtcEur ? shared.JsonBtcEurDirPath :
-                shared.JsonLtcEurDirPath;
-
             Func<string> newUrlAction = () =>  
-            pair == CurrencyPair.EthEur ? shared.UrlEtcEurOhlc :
-            pair == CurrencyPair.BtcEur ? shared.UrlBtcEurOhlc : 
-            shared.UrlLtcEurOhlc;
+            pair == CurrencyPair.EthEur ? shared.EthOhlcUrl :
+            pair == CurrencyPair.BtcEur ? shared.BtcOhlcUrl : 
+            shared.LtcOhlcUrl;
 
             var _url = _newUrl == string.Empty ? newUrlAction.Invoke() : _newUrl;
             shared.Log.AddLogEvent("Api Call Path:", _url);
+
+            var _dirPath = Path.GetDirectoryName(_jsonPath);
 
             long _since = lastTrd.GetLastTradeNumber(_dirPath);
 
@@ -43,11 +42,14 @@ namespace Shared
             shared.Log.AddLogEvent("Last Trade Number: ", $"{_since}\n");
             
             GetTrades(shared, pair, _url, _jsonPath, _csvPath, out _since, out _newUrl);
-            
+
+            if (pair == CurrencyPair.BtcEur) shared.BtcOhlcUrl = _newUrl;
+            if (pair == CurrencyPair.EthEur) shared.EthOhlcUrl = _newUrl;
+            if (pair == CurrencyPair.LtcEur) shared.LtcOhlcUrl = _newUrl;
+
             shared.Log.AddLogEvent($"Run {++shared.Count} Finished\n\n");
             shared.Log.PersistLog();
             shared.Log.Log = string.Empty;
-
         }
 
         public void GetTrades(SharedData shared, CurrencyPair pair, string url, 

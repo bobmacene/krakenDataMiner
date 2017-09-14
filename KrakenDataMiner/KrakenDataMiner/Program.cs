@@ -1,7 +1,6 @@
 ﻿using System;
 using Shared;
 using System.Threading.Tasks;
-using Shared.PathUrl;
 
 namespace KrakenDataMiner
 {
@@ -10,28 +9,11 @@ namespace KrakenDataMiner
         static void Main(string[] args)
         {
             var tradeData = new ProcessTradeData();
-
-            var _stop = false;                                  //close app
             var shared = new SharedData();
 
             try
             {
                 shared.Log.AddServerTimeToLog(shared.Call);
-
-                var exitAsyncTask = Task.Run(() =>
-                {
-                    shared.Exit.ExitAppProcess(shared, out _stop);
-
-                    if (_stop)
-                    {
-                        shared.Log.AddLogEvent("\t\t\tAPP MANUALLY EXITED\n\n");
-                        shared.Log.AddServerTimeToLog(shared.Call);
-                        shared.Log.AddLogEvent("FINISHED");
-                        shared.Log.PersistLog();
-                        Environment.Exit(-1);
-                    }
-                });
-                shared.Log.AddLogEvent("Exit Task Started\n\n");
 
                 Action EthEurCall = () => tradeData.CallApi(shared, CurrencyPair.EthEur);
                 Action BtcEurCall = () => tradeData.CallApi(shared, CurrencyPair.BtcEur);
@@ -46,8 +28,9 @@ namespace KrakenDataMiner
                         action.Invoke();
                         Task.Delay(60 * 1000).Wait();
                     }
-                    Task.Delay(60 * 1000).Wait();
+                    Task.Delay(60 * 60 * 1000).Wait();
                 }
+               
             }
             catch (Exception ex)
             {
@@ -55,12 +38,28 @@ namespace KrakenDataMiner
                 shared.Log.PersistLog();
             }
         }
-
+    
     }
 }
 
 
 #region altCode
+
+
+//var exitTask = Task.Run(() =>
+//{
+//    shared.Exit.ExitAppProcess(shared, out _stop);
+
+//    if (_stop)
+//    {
+//        shared.Log.AddLogEvent("\t\t\tAPP MANUALLY EXITED\n\n");
+//        shared.Log.AddServerTimeToLog(shared.Call);
+//        shared.Log.AddLogEvent("FINISHED");
+//        shared.Log.PersistLog();
+//        Environment.Exit(-1);
+//    }
+//});
+//shared.Log.AddLogEvent("Exit Task Started\n\n");
 
 //var tasks = new[]
 //{

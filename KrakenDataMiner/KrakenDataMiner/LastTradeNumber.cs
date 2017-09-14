@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Shared;
 using Shared.Models;
-using Shared.PathsUrls;
-using Shared.PathUrl;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,14 +16,14 @@ namespace KrakenDataMiner
             FileInfo lastFile = null;
             List<Ohlc> trades = null;
 
-            if(dir.GetFiles().Any())
+            if(dir.GetFiles().Any(x=>x.Extension == ".json"))
             {
-                lastFile = dir.GetFiles()
-                .Where(x => x.Extension.EndsWith(".json"))
-                .OrderBy(x => x.LastWriteTime).Last();
+                lastFile = dir.GetFiles().OrderBy(x => x.LastWriteTime).Last();
 
-                trades = JsonConvert.DeserializeObject<List<Ohlc>>(
-                    File.ReadAllText(lastFile.FullName));
+                trades = lastFile.Exists
+                    ? JsonConvert.DeserializeObject<List<Ohlc>>(
+                        File.ReadAllText(lastFile.FullName))
+                    : null;
             }
 
             return trades == null || trades.Count() == 0 ? 0 : trades.Last().UnixTime;

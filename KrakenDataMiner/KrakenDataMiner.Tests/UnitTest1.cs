@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using System.IO;
 using Shared;
-using Shared.PathsUrls;
 using System.Collections.Generic;
 
 namespace KrakenDataMiner.Tests
@@ -28,7 +27,7 @@ namespace KrakenDataMiner.Tests
             var api = new ApiCall();
             var shared = new SharedData();
 
-            var url = shared.UrlEtcEurOhlc; 
+            var url = shared.EthOhlcUrl; 
             var rawTrds = api.CallApi(url);
 
             var data = new DataAccess();
