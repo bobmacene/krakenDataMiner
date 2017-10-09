@@ -1,6 +1,6 @@
 ﻿namespace Shared
 {
-    public enum CurrencyPair { EthEur, BtcEur, LtcEur, LtcBtc }
+    public enum CurrencyPair { EthEur, BtcEur, LtcEur, LtcBtc, InvalidPair }
     public class SharedData
     {
         public bool StopApp { get; set; } = false;

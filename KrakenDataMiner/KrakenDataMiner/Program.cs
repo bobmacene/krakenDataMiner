@@ -17,19 +17,20 @@ namespace KrakenDataMiner
                 shared.Log.AddServerTimeToLog(shared.Call, out serverTime);
                 Console.WriteLine($"ServerTime: {serverTime}");
 
-                Action LtcBtcCall = () => tradeData.CallApi(shared, CurrencyPair.LtcBtc);
-                Action EthEurCall = () => tradeData.CallApi(shared, CurrencyPair.EthEur);
-                Action BtcEurCall = () => tradeData.CallApi(shared, CurrencyPair.BtcEur);
-                Action LtcEurCall = () => tradeData.CallApi(shared, CurrencyPair.LtcEur);
-
-                var actions = new[] { LtcBtcCall, EthEurCall, BtcEurCall, LtcEurCall };
-
+                var actions = new Action[]
+                {
+                    ()=> tradeData.CallApi(shared, CurrencyPair.EthEur),
+                    ()=> tradeData.CallApi(shared, CurrencyPair.BtcEur),
+                    ()=> tradeData.CallApi(shared, CurrencyPair.LtcEur),
+                    ()=> tradeData.CallApi(shared, CurrencyPair.LtcBtc)
+                };
+                
                 while (!shared.StopApp)
                 {
                     foreach (var action in actions)
                     {
                         action.Invoke();
-                        Console.WriteLine($"ApiCall Processed: {nameof(action)} @ {DateTime.Now}");
+                        Console.WriteLine($"ApiCall Processed: {DateTime.Now}");
                         Task.Delay(10 * 1000).Wait();
                     }
 
