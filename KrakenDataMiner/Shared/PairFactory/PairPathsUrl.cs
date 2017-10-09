@@ -1,4 +1,7 @@
-﻿namespace StopDataMiner.PairFactory
+﻿
+//Pairs available on Kraken listed here: https://api.kraken.com/0/public/AssetPairs
+
+namespace StopDataMiner.PairFactory
 {
     public interface IPairPathsUrl
     {

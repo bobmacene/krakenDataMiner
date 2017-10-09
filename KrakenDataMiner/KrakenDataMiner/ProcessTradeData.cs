@@ -7,8 +7,6 @@ using StopDataMiner.PairFactory;
 
 namespace Shared
 {
-    
-
     internal class ProcessTradeData
     {
         public void CallApi(SharedData shared, CurrencyPair pair)
@@ -18,23 +16,8 @@ namespace Shared
 
             var pairData = new PairFactory().GetPairData(pair);
 
-            //var _jsonPath = pair == CurrencyPair.EthEur ? shared.EthOhlcPathJson :
-            //    pair == CurrencyPair.BtcEur ? shared.BtcOhlcPathJson :
-            //    pair == CurrencyPair.LtcBtc ? shared.LtcBtcOhlcPathJson :
-            //    shared.LtcOhlcPathJson;
             shared.Log.AddLogEvent("JsonTradeFile Path:", pairData.JsonPath);
-
-            //var _csvPath = pair == CurrencyPair.EthEur ? shared.EthOhlcPathCsv:
-            //   pair == CurrencyPair.BtcEur ? shared.BtcOhlcPathCsv :
-            //   pair == CurrencyPair.LtcBtc ? shared.LtcBtcOhlcPathCsv :
-            //   shared.LtcOhlcPathCsv;
             shared.Log.AddLogEvent("CsvTradeFile Path:", pairData.CsvPath);
-
-            //Func<string> newUrlAction = () =>  
-            //pair == CurrencyPair.EthEur ? shared.EthOhlcUrl :
-            //pair == CurrencyPair.BtcEur ? shared.BtcOhlcUrl : 
-            //pair == CurrencyPair.LtcBtc ? shared.LtcBtcOhlcUrl :
-            //shared.LtcOhlcUrl;
 
             var _url = _newUrl == string.Empty ? pairData.OhlcUrl : _newUrl;
             shared.Log.AddLogEvent("Api Call Path:", _url);
