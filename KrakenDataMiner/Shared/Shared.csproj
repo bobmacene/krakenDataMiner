@@ -48,7 +48,6 @@
   <ItemGroup>
     <Compile Include="ApiCaller.cs" />
     <Compile Include="DataAccess.cs" />
-    <Compile Include="ExitApp.cs" />
     <Compile Include="JsonModel\JsonModel.cs" />
     <Compile Include="Models\Ohlc.cs" />
     <Compile Include="Logger.cs" />
