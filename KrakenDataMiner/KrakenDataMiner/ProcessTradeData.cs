@@ -1,13 +1,13 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using Shared.Models;
 using KrakenDataMiner;
+using StopDataMiner.PairFactory;
 
 namespace Shared
 {
-    public enum CurrencyPair { EthEur, BtcEur, LtcEur }
+    
 
     internal class ProcessTradeData
     {
@@ -16,36 +16,40 @@ namespace Shared
             var lastTrd = new LastTradeNumber();
             var _newUrl = string.Empty;
 
-            var _jsonPath = pair == CurrencyPair.EthEur ? shared.EthOhlcPathJson :
-                pair == CurrencyPair.BtcEur ? shared.BtcOhlcPathJson :
-                shared.LtcOhlcPathJson;
-            shared.Log.AddLogEvent("JsonTradeFile Path:", _jsonPath);
+            var pairData = new PairFactory().GetPairData(pair);
 
-            var _csvPath = pair == CurrencyPair.EthEur ? shared.EthOhlcPathCsv:
-               pair == CurrencyPair.BtcEur ? shared.BtcOhlcPathCsv :
-               shared.LtcOhlcPathCsv;
-            shared.Log.AddLogEvent("CsvTradeFile Path:", _csvPath);
+            //var _jsonPath = pair == CurrencyPair.EthEur ? shared.EthOhlcPathJson :
+            //    pair == CurrencyPair.BtcEur ? shared.BtcOhlcPathJson :
+            //    pair == CurrencyPair.LtcBtc ? shared.LtcBtcOhlcPathJson :
+            //    shared.LtcOhlcPathJson;
+            shared.Log.AddLogEvent("JsonTradeFile Path:", pairData.JsonPath);
 
-            Func<string> newUrlAction = () =>  
-            pair == CurrencyPair.EthEur ? shared.EthOhlcUrl :
-            pair == CurrencyPair.BtcEur ? shared.BtcOhlcUrl : 
-            shared.LtcOhlcUrl;
+            //var _csvPath = pair == CurrencyPair.EthEur ? shared.EthOhlcPathCsv:
+            //   pair == CurrencyPair.BtcEur ? shared.BtcOhlcPathCsv :
+            //   pair == CurrencyPair.LtcBtc ? shared.LtcBtcOhlcPathCsv :
+            //   shared.LtcOhlcPathCsv;
+            shared.Log.AddLogEvent("CsvTradeFile Path:", pairData.CsvPath);
 
-            var _url = _newUrl == string.Empty ? newUrlAction.Invoke() : _newUrl;
+            //Func<string> newUrlAction = () =>  
+            //pair == CurrencyPair.EthEur ? shared.EthOhlcUrl :
+            //pair == CurrencyPair.BtcEur ? shared.BtcOhlcUrl : 
+            //pair == CurrencyPair.LtcBtc ? shared.LtcBtcOhlcUrl :
+            //shared.LtcOhlcUrl;
+
+            var _url = _newUrl == string.Empty ? pairData.OhlcUrl : _newUrl;
             shared.Log.AddLogEvent("Api Call Path:", _url);
 
-            var _dirPath = Path.GetDirectoryName(_jsonPath);
+            var _dirPath = Path.GetDirectoryName(pairData.JsonPath);
 
             long _since = lastTrd.GetLastTradeNumber(_dirPath);
 
             if (_since == 0) _since = 1502194310;                       //"1504169508918596501";
             shared.Log.AddLogEvent("Last Trade Number: ", $"{_since}\n");
             
-            GetTrades(shared, pair, _url, _jsonPath, _csvPath, out _since, out _newUrl);
+            GetTrades(shared, pair, _url, pairData.JsonPath, pairData.CsvPath, 
+                out _since, out _newUrl);
 
-            if (pair == CurrencyPair.BtcEur) shared.BtcOhlcUrl = _newUrl;
-            if (pair == CurrencyPair.EthEur) shared.EthOhlcUrl = _newUrl;
-            if (pair == CurrencyPair.LtcEur) shared.LtcOhlcUrl = _newUrl;
+            _newUrl = pairData.OhlcUrl;
 
             shared.Log.AddLogEvent($"Run {++shared.Count} Finished\n\n");
             shared.Log.PersistLog();
@@ -84,8 +88,7 @@ namespace Shared
             since = latestTrades.Last().Last;
             shared.Log.AddLogEvent($"Last Trade Number: ", since.ToString());
 
-            shared.Log.AddLogEvent("Number of new trds added: ",
-                latestTrades.Count.ToString());
+            shared.Log.AddLogEvent("Number of new trds added: ", latestTrades.Count.ToString());
 
             newUrl = Path.Combine(url, since.ToString());
             shared.Log.AddLogEvent($"NewUrl: ", newUrl);
@@ -143,6 +146,17 @@ namespace Shared
                     ohlcs.Add(new Ohlc(ohlc, last));
                 }
                     return ohlcs;
+
+                case CurrencyPair.LtcBtc:
+                    var newLtcBtcTrds = shared.Data.Deserialise<LtcBtcOhlc>(json);
+                    last = newLtcBtcTrds.Result.Last;
+
+                    foreach (var ohlc in newLtcBtcTrds.Result.XLTCXXBT)
+                    {
+                        ohlcs.Add(new Ohlc(ohlc, last));
+                    }
+                    return ohlcs;
+
                 default:
                     return null;
             }

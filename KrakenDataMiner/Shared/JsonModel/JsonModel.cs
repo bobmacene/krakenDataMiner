@@ -3,11 +3,6 @@ using System.Collections.Generic;
 
 namespace Shared
 {
-       public class ListEthEurTrades
-    {
-        public List<EthEurOhlc> EthEurTradesList { get; set; }
-    }
-
 
     public class EthEurOhlc
     {
@@ -33,6 +28,19 @@ namespace Shared
         public List<string[]> XLTCZEUR { get; set; }
         public string Last { get; set; }
     }
+
+    public class LtcBtcOhlc
+    {
+        public string[] Error { get; set; }
+        public LtcBtcData Result { get; set; }
+    }
+
+    public class LtcBtcData
+    {
+        public List<string[]> XLTCXXBT { get; set; }
+        public string Last { get; set; }
+    }
+
 
     public class BtcEurOhlc
     {

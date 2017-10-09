@@ -17,10 +17,10 @@ namespace Shared
             LogPath = Path.Combine(ConfigurationManager.AppSettings["LogFilePath"], Filename);
         }
 
-        public void AddServerTimeToLog(ApiCall api)
+        public void AddServerTimeToLog(ApiCall api, out string serverTime)
         {
             long timeTaken;
-            var serverTime = api.CallApi(ConfigurationManager.AppSettings["ServerTimeUrl"], out timeTaken);
+            serverTime = api.CallApi(ConfigurationManager.AppSettings["ServerTimeUrl"], out timeTaken);
             var logLine = $"SERVERTIME: {serverTime}\n{DateTime.Now}:    APICALL TIME TAKEN: ms{timeTaken}";
             Log += $"\n{DateTime.Now}:    {logLine}\n";
         }

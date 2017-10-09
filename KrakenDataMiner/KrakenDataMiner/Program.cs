@@ -13,21 +13,26 @@ namespace KrakenDataMiner
 
             try
             {
-                shared.Log.AddServerTimeToLog(shared.Call);
+                var serverTime = string.Empty;
+                shared.Log.AddServerTimeToLog(shared.Call, out serverTime);
+                Console.WriteLine($"ServerTime: {serverTime}");
 
+                Action LtcBtcCall = () => tradeData.CallApi(shared, CurrencyPair.LtcBtc);
                 Action EthEurCall = () => tradeData.CallApi(shared, CurrencyPair.EthEur);
                 Action BtcEurCall = () => tradeData.CallApi(shared, CurrencyPair.BtcEur);
                 Action LtcEurCall = () => tradeData.CallApi(shared, CurrencyPair.LtcEur);
 
-                var actions = new[] { EthEurCall, BtcEurCall, LtcEurCall };
+                var actions = new[] { LtcBtcCall, EthEurCall, BtcEurCall, LtcEurCall };
 
                 while (!shared.StopApp)
                 {
                     foreach (var action in actions)
                     {
                         action.Invoke();
-                        Task.Delay(60 * 1000).Wait();
+                        Console.WriteLine($"ApiCall Processed: {nameof(action)} @ {DateTime.Now}");
+                        Task.Delay(10 * 1000).Wait();
                     }
+
                     Task.Delay(60 * 60 * 1000).Wait();
                 }
                
